@@ -1,11 +1,17 @@
 package yga.utilipack;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+/**
+ * A utility class for common string operations.
+ */
 public class StringUtils {
+
 	static Logger logger = LogManager.getLogger(StringUtils.class);
+
 	/**
 	 * Checks if a string contains another string or any string in an array (case
 	 * insensitive).
@@ -20,19 +26,24 @@ public class StringUtils {
 			return false;
 		}
 
-		if (search instanceof String) {
-			return containsIgnoreCaseSingle(str, (String) search);
-		} else if (search instanceof String[]) {
-			for (String searchStr : (String[]) search) {
-				if (containsIgnoreCaseSingle(str, searchStr)) {
-					return true;
+		try {
+			if (search instanceof String) {
+				return containsIgnoreCaseSingle(str, (String) search);
+			} else if (search instanceof String[]) {
+				for (String searchStr : (String[]) search) {
+					if (containsIgnoreCaseSingle(str, searchStr)) {
+						return true;
+					}
 				}
+				return false;
+			} else {
+				throw new IllegalArgumentException("Search parameter must be a String or an array of Strings.");
 			}
-			return false;
-		} else {
-			logger.error("An error occurred in StringUtils", new IllegalArgumentException("Search parameter must be a String or an array of Strings."));
+		} catch (IllegalArgumentException e) {
+			logger.error("Invalid search parameter type", e);
 			return false;
 		}
+
 	}
 
 	/**
@@ -57,5 +68,22 @@ public class StringUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Generates a string representation of the current date and time. The format of
+	 * the returned string is "ddyyyyHHmmss".
+	 * 
+	 * @return a string representing the current date and time
+	 */
+	public static String getCurrentDateTimeString() {
+		try {
+			LocalDateTime now = LocalDateTime.now();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddyyyyHHmmss");
+			return now.format(formatter);
+		} catch (Exception e) {
+			logger.error("Error generating current date and time string", e);
+			return null; // Handle gracefully or propagate the exception as needed
+		}
 	}
 }
