@@ -1,8 +1,13 @@
 package yga.utilipack;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,9 +15,9 @@ import org.apache.logging.log4j.Logger;
  * Utility class for file operations.
  */
 public class FileUtils {
-	
-	static Logger logger = LogManager.getLogger(FileUtils.class);
-	
+
+    private static final Logger logger = LogManager.getLogger(FileUtils.class);
+
     /**
      * Appends text to the end of a specified file.
      *
@@ -20,30 +25,59 @@ public class FileUtils {
      * @param text     the text to append
      */
     public static void append(String filename, String text) {
-        BufferedWriter bufWriter = null;
-        FileWriter fileWriter = null;
         try {
-            // Open the file for appending
-            fileWriter = new FileWriter(filename, true);
-            bufWriter = new BufferedWriter(fileWriter);
-            // Write a new line
-            bufWriter.newLine();
-            // Write the text to the file
-            bufWriter.write(text);
+            Path filePath = Paths.get(filename);
+            Files.write(filePath, (text + System.lineSeparator()).getBytes(), java.nio.file.StandardOpenOption.APPEND);
         } catch (IOException e) {
-        	logger.error("An error occurred in FileUtils", e);
-        } finally {
-            try {
-                // Close the writers
-                if (bufWriter != null) {
-                    bufWriter.close();
-                }
-                if (fileWriter != null) {
-                    fileWriter.close();
-                }
-            } catch (IOException e) {
-            	logger.error("An error occurred in FileUtils", e);
-            }
+            logger.error("An error occurred while appending to file: " + filename, e);
         }
+    }
+
+    /**
+     * Finds all files in the specified folder path.
+     *
+     * @param folderPath the path to the folder to search for files
+     * @return a List containing the names of all files found in the folder
+     * @throws IOException if an I/O error occurs while accessing the folder
+     */
+    public static List<String> findFiles(String folderPath) throws IOException {
+        try {
+            return Files.list(Paths.get(folderPath))
+                    .filter(Files::isRegularFile)
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            logger.error("An error occurred while listing files in folder: " + folderPath, e);
+            throw e; // Propagate the exception for handling at a higher level
+        }
+    }
+    
+    /**
+     * Retrieves the file extension from a file path.
+     *
+     * @param filePath the file path
+     * @return the file extension (e.g., "png", "jpg")
+     */
+    public static String getFileExtension(String filePath) {
+        int lastIndexOfDot = filePath.lastIndexOf(".");
+        if (lastIndexOfDot == -1) {
+            return ""; // empty extension
+        }
+        return filePath.substring(lastIndexOfDot + 1).toLowerCase();
+    }
+    
+    /**
+     * Generates the output file name based on current date/time, text, and image format.
+     *
+     * @param filePath the path to the original image file
+     * @param currentDateTime the current date and time formatted as yyyyMMddHHmmss
+     * @param text the free text 
+     * @param formatName the file format (e.g., "png", "csv")
+     * @return the generated output file name
+     */
+    public static String generateOutputFileName(String filePath, String currentDateTime, String text, String formatName) {
+        String directory = new File(filePath).getParent();
+        return directory + File.separator + currentDateTime + "_" + text  + formatName;
     }
 }
