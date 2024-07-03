@@ -17,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The `LastRun` class handles loading and saving of configuration data from a file.
+ * The `LastRunParameters` class handles loading and saving of configuration data from a file.
  * It provides methods to load configuration data into memory and save updated
  * configuration data back to the file.
  */
