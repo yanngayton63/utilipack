@@ -80,4 +80,38 @@ public class FileUtils {
         String directory = new File(filePath).getParent();
         return directory + File.separator + currentDateTime + "_" + text  + formatName;
     }
+
+      /**
+     * Writes data to a file, overwriting any existing content.
+     *
+     * @param data     The data to write to the file.
+     * @param filePath The path to the file to write to.
+     */
+    public static void writeToFileOverwrite(String data, String filePath) {
+        FileWriter writer = null;
+        try {
+            // Create FileWriter with specified file path
+            writer = new FileWriter(filePath);
+
+            // Write data to file
+            writer.write(data);
+
+            // Log success message
+            logger.info("Data successfully written to file (overwritten): " + filePath);
+        } catch (IOException e) {
+            // Log error if writing fails
+            logger.error("Error writing data to file (overwritten): " + filePath, e);
+            // Optionally handle the error (e.g., display a pop-up)
+        } finally {
+            // Ensure FileWriter is closed properly
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    // Log error if closing FileWriter fails
+                    logger.error("Error closing FileWriter for file: " + filePath, e);
+                }
+            }
+        }
+    }
 }
