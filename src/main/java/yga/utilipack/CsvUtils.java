@@ -78,8 +78,7 @@ public class CsvUtils {
      */
     @SafeVarargs
     public static void writeOutput(String outputFileName, List<String>... lists) {
-        String date = StringUtils.getCurrentDateTimeString();
-        File file = new File(outputFileName + "_" + date + ".csv");
+        File file = new File(outputFileName + ".csv");
 
         try (PrintWriter pw = new PrintWriter(new FileWriter(file))) {
             int size = lists[0].size();
