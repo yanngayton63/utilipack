@@ -1,0 +1,48 @@
+# Configuration JitPack pour un projet Maven
+
+# JitPack compile les projets en utilisant des conteneurs Docker.
+# Ce fichier configure le comportement de la compilation.
+
+# Indique la version de l'API JitPack utilisée. Actuellement, c'est la version 1.
+version: 1.0
+
+# Les commandes à exécuter pour compiler le projet.
+# Par défaut, JitPack utilise "mvn clean install".
+scripts:
+  build:
+    - mvn clean install -DskipTests
+
+# Vous pouvez également définir des commandes avant et après la construction.
+# Ces commandes peuvent être utilisées pour installer des dépendances, configurer l'environnement, etc.
+pre:
+  # Exemple de commande avant la compilation
+  - echo "Préparation avant la compilation"
+  - mvn dependency:resolve
+  
+post:
+  # Exemple de commande après la compilation
+  - echo "Nettoyage après la compilation"
+  - mvn clean
+
+# Si votre projet a des sous-modules, vous pouvez les définir ici.
+# Submodules sont utiles pour les projets multi-modules Maven.
+# submodules:
+  # - my-submodule
+
+# Parfois, vous devrez peut-être configurer des variables d'environnement.
+env:
+  variables:
+    MAVEN_OPTS: "-Xmx1024m -XX:MaxPermSize=256m"
+
+# Vous pouvez également spécifier un fichier Docker personnalisé.
+# Cela peut être utile si vous avez besoin d'une configuration Docker spécifique.
+# docker:
+  # file: Dockerfile.jitpack
+
+# Si vous avez besoin de dépendances supplémentaires pour votre projet, vous pouvez les spécifier ici.
+# dependencies:
+#   - groupId:artifactId:version
+
+# Vous pouvez également configurer des caches pour améliorer les temps de compilation.
+caches:
+  - $HOME/.m2
