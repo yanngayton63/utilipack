@@ -79,7 +79,7 @@ public class StringUtils {
 	public static String getCurrentDateTimeString() {
 		try {
 			LocalDateTime now = LocalDateTime.now();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddyyyyHHmmss");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyyHHmmss");
 			return now.format(formatter);
 		} catch (Exception e) {
 			logger.error("Error generating current date and time string", e);
