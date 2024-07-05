@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration status="INFO">
+
+    <!-- Configuration de la console -->
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
+        
+        <!-- Configuration du fichier de sortie par jour avec nom dynamique -->
+        <RollingFile name="File"
+                     fileName="logs/${date:yyyy-MM-dd}_app.log"
+                     filePattern="logs/${date:yyyy-MM-dd}_${project_name}-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="7"/>
+        </RollingFile>
     </Appenders>
+    
+    <!-- Configuration des loggers -->
     <Loggers>
-        <Root level="INFO">
+        <!-- Configuration du niveau global -->
+        <Root level="DEBUG">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
         </Root>
     </Loggers>
+
 </Configuration>
