@@ -57,7 +57,7 @@ public class ImageUtils {
         g.drawString(text, x, y);
         g.dispose();
 
-        String currentDateTime = StringUtils.getCurrentDateTimeString();
+        String currentDateTime = DateUtils.getCurrentDateTimeString();
         String formatName = FileUtils.getFileExtension(imagePath);
 
         if (!isSupportedFormat(formatName)) {
