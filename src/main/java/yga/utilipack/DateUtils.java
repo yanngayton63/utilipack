@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,4 +39,21 @@ public class DateUtils {
         // Formatting the date to the desired output format
         return outputFormatter.format(date);
     }
+
+    	/**
+	 * Generates a string representation of the current date and time. The format of
+	 * the returned string is "ddyyyyHHmmss".
+	 * 
+	 * @return a string representing the current date and time
+	 */
+	public static String getCurrentDateTimeString() {
+		try {
+			LocalDateTime now = LocalDateTime.now();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyyHHmmss");
+			return now.format(formatter);
+		} catch (Exception e) {
+			logger.error("Error generating current date and time string", e);
+			return null; // Handle gracefully or propagate the exception as needed
+		}
+	}
 }
