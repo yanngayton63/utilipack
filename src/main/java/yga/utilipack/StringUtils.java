@@ -69,21 +69,4 @@ public class StringUtils {
 		}
 		return false;
 	}
-
-	/**
-	 * Generates a string representation of the current date and time. The format of
-	 * the returned string is "ddyyyyHHmmss".
-	 * 
-	 * @return a string representing the current date and time
-	 */
-	public static String getCurrentDateTimeString() {
-		try {
-			LocalDateTime now = LocalDateTime.now();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyyHHmmss");
-			return now.format(formatter);
-		} catch (Exception e) {
-			logger.error("Error generating current date and time string", e);
-			return null; // Handle gracefully or propagate the exception as needed
-		}
-	}
 }
