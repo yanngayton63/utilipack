@@ -25,7 +25,7 @@ public class DateUtils {
      */
     public static String convertDateFormat(String dateStr, String outputFormat) {
         // Input format: ddyyyyHHmmss
-        SimpleDateFormat inputFormat = new SimpleDateFormat("ddyyyyHHmmss");
+        SimpleDateFormat inputFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
 
         // Output format specified by outputFormat
         SimpleDateFormat outputFormatter = new SimpleDateFormat(outputFormat);
