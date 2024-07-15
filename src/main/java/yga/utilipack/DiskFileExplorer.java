@@ -100,4 +100,29 @@ public class DiskFileExplorer {
 
 		return fileList;
 	}
+
+//		private static final String DEFAULT_OUTPUT_DIRECTORY = "Ai4utg/GenerationSBT";
+//	private static String OUTPUT_DIRECTORY = DEFAULT_OUTPUT_DIRECTORY;
+
+	/**
+	 * Get all the paths of the java files in a given directory.
+	 * 
+	 * @param inputDirectory The root directory containing the files.
+	 * @return A list of all the files path in the directory given in parameter and
+	 *         its subdirectory.
+	 */
+	public static List<String> getAllFilesPath(final File inputDirectory, String extension) {
+		List<String> filesPath = new ArrayList<String>();
+		for (final File fileEntry : inputDirectory.listFiles()) {
+			if (fileEntry.isDirectory()) {
+				filesPath.addAll(getAllFilesPath(fileEntry, extension));
+			} else {
+				String file = fileEntry.getAbsolutePath();
+				if (FilenameUtils.getExtension(file).equals(extension)) {
+					filesPath.add(file);
+				}
+			}
+		}
+		return filesPath;
+	}
 }
