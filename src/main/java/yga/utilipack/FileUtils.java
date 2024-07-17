@@ -1,14 +1,17 @@
 package yga.utilipack;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -115,7 +118,7 @@ public class FileUtils {
 		}
 	}
 
-		/**
+	/**
 	 * Check if the directory located at the path given in output already exists. If
 	 * it does : do nothing and just return the input. If it doesn't : create the
 	 * directory.
@@ -171,21 +174,23 @@ public class FileUtils {
 		OUTPUT_DIRECTORY = DEFAULT_OUTPUT_DIRECTORY;
 	}
 
-		/**
+	/**
 	 * Generate and write into a file with the given content.
 	 * 
 	 * @param inputFile       The given file from which we will generate another
 	 *                        file.
-	 * @param funcID			The identifier of the function, for naming purpose
+	 * @param funcID          The identifier of the function, for naming purpose
 	 * @param fileContent     The content of the result file.
 	 * @param extension       The extension of the result file.
-	 * @param prefix          The result file name will be a concatenation with the prefix
-	 * @param suffix          The result file name will be a concatenation with the suffix
-	 *                        one of the File given in parameter and this parameter.
+	 * @param prefix          The result file name will be a concatenation with the
+	 *                        prefix
+	 * @param suffix          The result file name will be a concatenation with the
+	 *                        suffix one of the File given in parameter and this
+	 *                        parameter.
 	 * @param outputDirectory The output directory to generate the result file.
 	 */
-	public static void generateFile(File inputFile, String funcID, String fileContent, String extension, String prefix, String suffix,
-			String outputDirectory) {
+	public static void generateFile(File inputFile, String funcID, String fileContent, String extension, String prefix,
+			String suffix, String outputDirectory) {
 		String outputFileName = generateFileName(funcID, extension, prefix, suffix);
 
 		// If there's a specified outputDirectory than use this one, otherwise use
@@ -206,7 +211,6 @@ public class FileUtils {
 		OUTPUT_DIRECTORY = finalOutputDirectory;
 	}
 
-	
 	/**
 	 * Generate and write into a file with the given content.
 	 * 
@@ -220,7 +224,7 @@ public class FileUtils {
 	 */
 	public static void generateFile(File inputFile, String fileContent, String extension, String suffix,
 			String outputDirectory) {
-		String outputFileName = generateFileName(inputFile, extension, suffix);
+		String outputFileName = generateFileName(inputFile.getName(), extension, null,suffix);
 
 		// If there's a specified outputDirectory than use this one, otherwise use
 		// default outputDirectory
@@ -247,14 +251,16 @@ public class FileUtils {
 	 *                        file.
 	 * @param fileContent     The content of the result file.
 	 * @param extension       The extension of the result file.
-	 * @param prefix          The result file name will be a concatenation with the prefix
-	 * @param suffix          The result file name will be a concatenation with the suffix
-	 *                        one of the File given in parameter and this parameter.
+	 * @param prefix          The result file name will be a concatenation with the
+	 *                        prefix
+	 * @param suffix          The result file name will be a concatenation with the
+	 *                        suffix one of the File given in parameter and this
+	 *                        parameter.
 	 * @param outputDirectory The output directory to generate the result file.
 	 */
 	public static void generateFile(File inputFile, String fileContent, String extension, String prefix, String suffix,
 			String outputDirectory) {
-		String outputFileName = generateFileName(inputFile, extension, prefix, suffix);
+		String outputFileName = generateFileName(inputFile.getName(), extension, prefix, suffix);
 
 		// If there's a specified outputDirectory than use this one, otherwise use
 		// default outputDirectory
@@ -274,171 +280,81 @@ public class FileUtils {
 		OUTPUT_DIRECTORY = finalOutputDirectory;
 	}
 
-    private static final String DEFAULT_OUTPUT_DIRECTORY = "Ai4utg/GenerationSBT";
-    private static String OUTPUT_DIRECTORY = DEFAULT_OUTPUT_DIRECTORY;
+	
+	private static final String DEFAULT_OUTPUT_DIRECTORY = "Ai4utg/GenerationSBT";
+	private static String OUTPUT_DIRECTORY = DEFAULT_OUTPUT_DIRECTORY;
 
-    /**
-     * Get all the paths of the files with a given extension in a directory.
-     * 
-     * @param inputDirectory The root directory containing the files.
-     * @param extension The file extension to filter by.
-     * @return A list of all the file paths in the directory and its subdirectories.
-     */
-    public static List<String> getAllFilesPath(final File inputDirectory, String extension) {
-        List<String> filesPath = new ArrayList<>();
-        for (final File fileEntry : inputDirectory.listFiles()) {
-            if (fileEntry.isDirectory()) {
-                filesPath.addAll(getAllFilesPath(fileEntry, extension));
-            } else {
-                String file = fileEntry.getAbsolutePath();
-                if (FilenameUtils.getExtension(file).equals(extension)) {
-                    filesPath.add(file);
-                }
-            }
-        }
-        return filesPath;
-    }
+	/**
+	 * Get all the paths of the files with a given extension in a directory.
+	 * 
+	 * @param inputDirectory The root directory containing the files.
+	 * @param extension      The file extension to filter by.
+	 * @return A list of all the file paths in the directory and its subdirectories.
+	 */
+	public static List<String> getAllFilesPath(final File inputDirectory, String extension) {
+		List<String> filesPath = new ArrayList<>();
+		for (final File fileEntry : inputDirectory.listFiles()) {
+			if (fileEntry.isDirectory()) {
+				filesPath.addAll(getAllFilesPath(fileEntry, extension));
+			} else {
+				String file = fileEntry.getAbsolutePath();
+				if (FilenameUtils.getExtension(file).equals(extension)) {
+					filesPath.add(file);
+				}
+			}
+		}
+		return filesPath;
+	}
 
-    /**
-     * Generate and write into a file with the given content.
-     * 
-     * @param inputFile The given file from which we will generate another file.
-     * @param fileContent The content of the result file.
-     * @param extension The extension of the result file.
-     * @param suffix The result file name will be a concatenation of the original name and this suffix.
-     * @param outputDirectory The output directory to generate the result file.
-     */
-    public static void generateFile(File inputFile, String fileContent, String extension, String suffix, String outputDirectory) {
-        String outputFileName = generateFileName(FilenameUtils.removeExtension(inputFile.getName()), extension, null, suffix);
-        writeFile(outputFileName, fileContent, outputDirectory, inputFile);
-    }
+	/**
+	 * Create the name of the generated file.
+	 * 
+	 * @param identifier The file name or function identifier for naming.
+	 * @param extension  The extension of the result file.
+	 * @param prefix     The result file name will be a concatenation with the
+	 *                   prefix (can be null).
+	 * @param suffix     The result file name will be a concatenation with the
+	 *                   suffix (can be null).
+	 * @return The name of the file that will be created.
+	 */
+	public static String generateFileName(String identifier, String extension, String prefix, String suffix) {
+		StringBuilder fileName = new StringBuilder();
 
-    /**
-     * Generate and write into a file with the given content.
-     * 
-     * @param inputFile The given file from which we will generate another file.
-     * @param fileContent The content of the result file.
-     * @param extension The extension of the result file.
-     * @param prefix The result file name will be a concatenation with the prefix.
-     * @param suffix The result file name will be a concatenation with the suffix.
-     * @param outputDirectory The output directory to generate the result file.
-     */
-    public static void generateFile(File inputFile, String fileContent, String extension, String prefix, String suffix, String outputDirectory) {
-        String outputFileName = generateFileName(FilenameUtils.removeExtension(inputFile.getName()), extension, prefix, suffix);
-        writeFile(outputFileName, fileContent, outputDirectory, inputFile);
-    }
+		if (prefix != null) {
+			fileName.append(prefix);
+		}
 
-    /**
-     * Generate and write into a file with the given content.
-     * 
-     * @param inputFile The given file from which we will generate another file.
-     * @param funcID The identifier of the function, for naming purpose.
-     * @param fileContent The content of the result file.
-     * @param extension The extension of the result file.
-     * @param prefix The result file name will be a concatenation with the prefix.
-     * @param suffix The result file name will be a concatenation with the suffix.
-     * @param outputDirectory The output directory to generate the result file.
-     */
-    public static void generateFile(File inputFile, String funcID, String fileContent, String extension, String prefix, String suffix, String outputDirectory) {
-        String outputFileName = generateFileName(funcID, extension, prefix, suffix);
-        writeFile(outputFileName, fileContent, outputDirectory, inputFile);
-    }
+		fileName.append(identifier);
 
-    /**
-     * Create the name of the generated file.
-     * 
-     * @param identifier The file name or function identifier for naming.
-     * @param extension The extension of the result file.
-     * @param prefix The result file name will be a concatenation with the prefix (can be null).
-     * @param suffix The result file name will be a concatenation with the suffix (can be null).
-     * @return The name of the file that will be created.
-     */
-    public static String generateFileName(String identifier, String extension, String prefix, String suffix) {
-        StringBuilder fileName = new StringBuilder();
+		if (suffix != null) {
+			fileName.append(suffix);
+		}
 
-        if (prefix != null) {
-            fileName.append(prefix);
-        }
+		fileName.append(extension);
 
-        fileName.append(identifier);
+		return fileName.toString();
+	}
 
-        if (suffix != null) {
-            fileName.append(suffix);
-        }
-
-        fileName.append(extension);
-
-        return fileName.toString();
-    }
-
-    /**
-     * Ensure the directory exists, creating it if necessary.
-     * 
-     * @param outputDirectoryPath The directory path.
-     * @return The output directory path.
-     */
-    public static String generateDirectory(String outputDirectoryPath) {
-        File directory = new File(outputDirectoryPath);
-
-        if (!directory.exists()) {
-            directory.mkdir();
-            logger.info("Creation of output directory : " + outputDirectoryPath);
-        }
-
-        return outputDirectoryPath;
-    }
-
-    /**
-     * Ensure the default output directory exists, creating it if necessary.
-     * 
-     * @param inputFile Used to get the path of the inputFile and generate a new directory from this path.
-     * @return A string containing the path of the default output directory.
-     */
-    public static String generateDefaultDirectory(File inputFile) {
-        File directory = new File(DEFAULT_OUTPUT_DIRECTORY);
-
-        if (!directory.exists()) {
-            directory.mkdir();
-            logger.info("Creation of default output directory : " + DEFAULT_OUTPUT_DIRECTORY);
-        }
-
-        return DEFAULT_OUTPUT_DIRECTORY;
-    }
-
-    /**
-     * Get the current output directory.
-     * 
-     * @return The output directory.
-     */
-    public static String getOutputDirectory() {
-        return OUTPUT_DIRECTORY;
-    }
-
-    /**
-     * Reset the output directory to the default value.
-     */
-    public static void cleanup() {
-        OUTPUT_DIRECTORY = DEFAULT_OUTPUT_DIRECTORY;
-    }
-
-    /**
-     * Helper method to write content to a file.
-     * 
-     * @param outputFileName The name of the output file.
-     * @param fileContent The content to write into the file.
-     * @param outputDirectory The directory where the file will be generated.
-     * @param inputFile The original input file.
-     */
-    private static void writeFile(String outputFileName, String fileContent, String outputDirectory, File inputFile) {
-        String finalOutputDirectory = (outputDirectory != null) ? generateDirectory(outputDirectory) : generateDefaultDirectory(inputFile);
-        BufferedWriter writer;
-        try {
-            writer = new BufferedWriter(new FileWriter(new File(finalOutputDirectory, outputFileName)));
-            writer.write(fileContent);
-            writer.close();
-        } catch (IOException e) {
-            logger.error("Could not generate a new file called " + outputFileName + " at the location " + finalOutputDirectory);
-        }
-        OUTPUT_DIRECTORY = finalOutputDirectory;
-    }
+	/**
+	 * Helper method to write content to a file.
+	 * 
+	 * @param outputFileName  The name of the output file.
+	 * @param fileContent     The content to write into the file.
+	 * @param outputDirectory The directory where the file will be generated.
+	 * @param inputFile       The original input file.
+	 */
+	public static void writeFile(String outputFileName, String fileContent, String outputDirectory, File inputFile) {
+		String finalOutputDirectory = (outputDirectory != null) ? generateDirectory(outputDirectory)
+				: generateDefaultDirectory(inputFile);
+		BufferedWriter writer;
+		try {
+			writer = new BufferedWriter(new FileWriter(new File(finalOutputDirectory, outputFileName)));
+			writer.write(fileContent);
+			writer.close();
+		} catch (IOException e) {
+			logger.error("Could not generate a new file called " + outputFileName + " at the location "
+					+ finalOutputDirectory);
+		}
+		OUTPUT_DIRECTORY = finalOutputDirectory;
+	}
 }

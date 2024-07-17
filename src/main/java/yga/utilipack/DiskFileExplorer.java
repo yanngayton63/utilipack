@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -100,9 +101,6 @@ public class DiskFileExplorer {
 
 		return fileList;
 	}
-
-//		private static final String DEFAULT_OUTPUT_DIRECTORY = "Ai4utg/GenerationSBT";
-//	private static String OUTPUT_DIRECTORY = DEFAULT_OUTPUT_DIRECTORY;
 
 	/**
 	 * Get all the paths of the java files in a given directory.

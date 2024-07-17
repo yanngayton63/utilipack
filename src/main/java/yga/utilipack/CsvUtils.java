@@ -49,7 +49,7 @@ public class CsvUtils {
 				}
 			}
 		} catch (IOException e) {
-			logger.error("An error occurred while reading the CSV file: {}", csvFile, e);
+			logger.error("readInputFile - An error occurred while reading the CSV file: {}", csvFile, e);
 		}
 	}
 
@@ -75,15 +75,21 @@ public class CsvUtils {
 	 *
 	 * @param outputFileName the base name of the output file
 	 * @param lists          the lists containing the data to write
+	 * @throws IOException 
 	 */
     @SafeVarargs
-    public static void writeOutput(String outputFileName, List<String>... lists) {
-        File file = new File(outputFileName + ".csv");
+    public static void writeOutput(String outputFileName, List<String>... lists) throws IOException {
+       
+    	if(!outputFileName.contains(".csv"))
+    		outputFileName += ".csv";
+    	
+    	File file = new File(outputFileName);
 
         try {
             writeToFile(file, lists);
         } catch (IOException e) {
-            logger.error("An error occurred in CsvUtils", e);
+            logger.error("writeOutput - An error occurred in CsvUtils", e);
+            throw e;
         }
     }
     

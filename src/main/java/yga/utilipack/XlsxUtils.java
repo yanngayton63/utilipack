@@ -100,7 +100,7 @@ public class XlsxUtils {
 	 *                           header)
 	 */
 	public static void copyRowsToOutputSheet(Sheet sourceSheet, Sheet targetSheet, Workbook outputWorkbook,
-			String[] columnsToCheck, Set<String> usedSheetNames, boolean includeEmptySheets) {
+			String[] columnsToCheck, Set<String> usedSheetNames, String specificValue,  boolean includeEmptySheets) {
 
 		// Create a map of header values to column indices
 		Map<String, Integer> headerMap = getHeaderMap(sourceSheet);
@@ -128,7 +128,7 @@ public class XlsxUtils {
 			if (sourceRow.getRowNum() == 0) {
 				continue; // Skip header row
 			}
-			if (isTargetRow(sourceRow, columnsToCheck, headerMap)) {
+			if (isTargetRow(sourceRow, columnsToCheck, headerMap, specificValue)) {
 				Row targetRow = targetSheet.createRow(rowIndex);
 				copyRowWithStyles(sourceRow, targetRow, outputWorkbook, headerMap, columnsToCheck);
 				rowIndex++;
@@ -172,25 +172,32 @@ public class XlsxUtils {
 	}
 
 	/**
-	 * Checks if a row meets the criteria based on the columns to check.
+	 * Checks if a row meets the criteria based on the columns to check and a specific value.
 	 *
 	 * @param sourceRow      the source row
 	 * @param columnsToCheck the columns to check based on header values
 	 * @param headerMap      the map of header values to column indices
+	 * @param specificValue  the specific value to search for (can be null or empty)
 	 * @return true if the row meets the criteria, false otherwise
 	 */
-	private static boolean isTargetRow(Row sourceRow, String[] columnsToCheck, Map<String, Integer> headerMap) {
-		for (String columnHeader : columnsToCheck) {
-			String normalizedHeader = normalizeHeaderName(columnHeader);
-			Integer columnIndex = headerMap.get(normalizedHeader);
-			if (columnIndex != null && columnIndex >= 0) { // Ensure columnIndex is valid
-				Cell cell = sourceRow.getCell(columnIndex);
-				if (cell == null || cell.getCellType() == CellType.BLANK || cell.getStringCellValue().isEmpty()) {
-					return true;
-				}
-			}
-		}
-		return false;
+	private static boolean isTargetRow(Row sourceRow, String[] columnsToCheck, Map<String, Integer> headerMap, String specificValue) {
+	    for (String columnHeader : columnsToCheck) {
+	        String normalizedHeader = normalizeHeaderName(columnHeader);
+	        Integer columnIndex = headerMap.get(normalizedHeader);
+	        if (columnIndex != null && columnIndex >= 0) { // Ensure columnIndex is valid
+	            Cell cell = sourceRow.getCell(columnIndex);
+	            if (cell == null || cell.getCellType() == CellType.BLANK || cell.toString().isEmpty()) {
+	                return true;
+	            }
+	            // If a specific value is provided, check if the cell matches this value, ignoring the data type
+	            if (specificValue != null && !specificValue.isEmpty()) {
+	                if (specificValue.equals(cell.toString())) {
+	                    return true;
+	                }
+	            }
+	        }
+	    }
+	    return false;
 	}
 
 	/**
